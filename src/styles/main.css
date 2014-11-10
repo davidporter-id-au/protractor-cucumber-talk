@@ -1,0 +1,4 @@
+@import '../../bower_components/prism/themes/prism-dark.css';
+ul {
+  text-align: left !important;
+}

@@ -1,0 +1,7 @@
+{
+  "name": "presentation-cucumber-protractor-and-bdd",
+  "version": "0.0.0",
+  "dependencies": {
+    "prism": "gh-pages"
+  }
+}
