@@ -6,15 +6,13 @@ html
 		meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
 	title Cucumber, Protractor and BDD
 	body
-
 		article
-
 			section 
 				h1 Lessons Learned: 
 				h2 CucumberJS &amp; Protractor
 			section 
-				h2 Overview 
 				ul
+					li <h2>Overview</h2>
 					li The theory: What we're trying to do
 					li The practical: The implementation of Protractor, Cucumber 
 			section 
@@ -34,32 +32,36 @@ html
 							<b>Given</b> The user is logged in
 							<b>When</b> The user clicks on on the "edit" button
 							<b>Then</b> The edit modal should appear 
+
+						p Theory: take acceptance criteria, make tests, make tests pass
+
 			section
-				h3 Intent
-					ul
-						li Integration tests for Devs
-						li Introducing 'functional' level tests
-						li BDD's ideals: Minimizing crossover and waste between team functions
-						li Solve the 'black box' problem with automation 
-						li Remove Fragility, make devs aware of automation
-			section
-				h3 Intent continued
-					ul
-						li Angular awareness with automation
-						li mobile automation and testing
-						li Resource wall with testing
-						li 'top down' approach 
+				h3 Technical Intent
+				ul
+					li BDD's ideals: Minimizing crossover and waste between team functions
+					li Integration tests for Devs
+					li Remove Fragility, make devs aware of automation
+					li The future: mobile automation and testing
+					li Resource wall with testing
+					li 'top down' approach for testing for developers
 			section
 				h3 The case for e2e testing for devs
 					<img src="images/pyramid.png">
 					p Source: Martin Fowler
 			section
 				<img width="100%" height="100%" src="images/testing.png">
-			section 
-				h3 To use Cucumber or Jasmine?  
-				p "Will the team (everyone, not only the tech people) benefit from scenarios written in plain English?  Is there a chance it'll help someone understand things better and communicate more efficiently?" <br /> <a href="http://www.infoq.com/news/2014/04/cucumberjs-bdd-biezemans">Julien Biezemans, Interview with infoQ</a>
 			section
-				p <b>Decisional criterion if devs wish to engage with BAs, QAs</b>: 
+				h3 Why should you care?
+				ul
+					li Slow to run, but enormous coverage written fast 
+					li True integration - tests everything 
+					li Provides certainty, continuous delivery probably impossible without it 
+			section 
+				h3 To use Cucumber or Jasmine frameworks?  
+				p <i>"Will the team (everyone, not only the tech people) benefit from scenarios written in plain English?  Is there a chance it'll help someone understand things better and communicate more efficiently?" <br /> <a href="http://www.infoq.com/news/2014/04/cucumberjs-bdd-biezemans"> Julien Biezemans, Interview with infoQ</a></i>
+				p Not sure? use Jasmine, Cucumber's use cases are narrow, may work for us, probably not for everyone. 
+			section
+				p <b>Using Cucumber...</b>
 					ul 
 						li <b>Benefits: </b>
 						li Engagement in development and testing by business with features 
@@ -71,84 +73,62 @@ html
 						li Very new, somewhat unstable, little support, annoying debugging
 						li popularity in decline in Ruby
 			section
+				h3 BDD's goal of cross-functional teamwork?
+				p There is tension between business documents and technical ones: 
+			section 
+				p Business is concerned with conveying intent in a timely, communicable fashion.
+				pre
+					<b>Scenario</b> free Delivery
+					<b>When</b> The customer has ordered 10 books
+					<b>Then</b> They should have free delivery
+			section 
+				p Techs are concerned with reusability, making it work.
+				pre
+					<b>Scenario</b> Free delivery 
+					<b>Given</b> The Customer is logged in
+					<b>And</b> The customer is on the "/orders" page
+					<b>And</b> the threshold for free delivery is "10" books 
+					<b>And</b> the customer is &lt;type&gt; with &lt;books&gt; in the cart 
+					<b>When</b> The customer clicks on "#order-button" 
+					<b>Then</b> "#delivery-cost-field" should be "$0"
+			section
+				p If techs are editing the feature-files for reusability, what benefit are they getting over putting a simple comment above their tests? 
+				p <b>Solution:</b> abstract away low-level functionality with <a href="http://www.thoughtworks.com/insights/blog/using-page-objects-overcome-protractors-shortcomings">page-objects</a>, keep specs high-level
+			section
 				h3 Architecture 
 					<img width="100%" height="100%" src="images/architecture.png">
 			section
 				ul
 					li 
-						h3 Technologies used
+						h3 Implementation 
 					li Addressing the problems of brittleness in selenium 
 					li Screenshot testing and the benefits of the top-down approach 
 					li Browsers in use 
 					li The future: Mobile automation 
 					li The Async problem 
 			section
-					ul
-						li <b>NEARLY ALL PROTRACTOR ACTIONS ARE ASYNC!?!</b>
-						li There are a large number of series operations required 
-						li Particularly difficult for QA's  
-						li Protractor does make a good start on handling promises
-						li Solution: employ Async, Q, Co, chai-as-promised liberally 
-							<table>
-								<tr>
-									<td>Q</td>
-									<td>Async</td>
-									<td>Co</td>
-								</tr>
-								<tr>
-									<td>
-										<pre>
-											q.all(functionWhichMakesPromiseArray())
-												.then(function(){
-													cb();	
-												}, 
-												function(err){
-													cb.failure(err);	
-												});
-										</pre>
-									</td>
-									<td>
-										<pre>
-											async.waterfall([
-												function(cb){
-													makeStuff(cb);
-												},
-												function(stuff, cb){
-													workWithStuff(stuff, cb);
-												},
-											], function(err){
-												console.error('BAD!', err);
-											})
-										</pre>
-									</td>
-									<td>
-										<pre>
-											co(function *(){
-												var approved = yield page.getApprovedSnapshot();
-												var approvedHash = crypto.createHash('md5').update(approved).digest('hex');
-												var current = yield page.getSnap();
-												var currentHash = crypto.createHash('md5').update(current).digest('hex');
-												expect(currentHash).to.equal(approvedHash);
-												cb();
-											})();
-										</pre>
-									</td>
-								</tr>
-							</table>
-						li gnode for anything you need with ES6
+				ul
+					li <b>NEARLY ALL PROTRACTOR ACTIONS ARE ASYNC!?!</b>
+					li There are a large number of series operations required 
+					li Particularly difficult for QA's  
+					li Protractor does make a good start on handling promises
+					li Solution: employ Async, Q, Co, chai-as-promised liberally 
+					li gnode for anything you need with ES6
 			section
-				h3 The Brittleness Problem	
-					ul
-						li Page Drivers
-						li Data Automation Tags
-						li Page inheritance
+				ul
+					li 
+						h3 The Brittleness Problem	
+					li Page Drivers
+					li Data Automation Tags
+					li Page inheritance
 			section 
-				h3 Looking forward 
-					ul
-						li Apium
-						li Selendroid, Android, IOS automation
-						li Saucelabs and third-party testing platforms
-						li IOS automation
+				ul
+					li 
+						h3 Looking forward 
+					li Apium
+					li Selendroid, Android, IOS automation
+					li Saucelabs and third-party testing platforms
+					li IOS automation
 			section
 				h3 Anything of interest here? 
 				p make new mistakes, don't repeat ours. Example repo: 
